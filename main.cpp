@@ -28,7 +28,7 @@ BOOL onConsoleEvent(DWORD event) {
 const aegis::snowflake meedev           = 280450898885607425;
 
 const std::string default_cmd           = u8"lsw/sn";
-const std::string version_app           = u8"V1.0.1";
+const std::string version_app           = u8"V1.0.2";
 
 const std::string new_message           = u8"📃";
 const std::string edit_message          = u8"📝";
@@ -106,7 +106,7 @@ int main(int argc, char* argv[])
                             u8"`" + default_cmd + u8" help`: shows this\n"
                             u8"`" + default_cmd + u8" simple`: enable simple logging\n"
                             u8"`" + default_cmd + u8" complex`: enable complex logging\n"
-                            u8"`" + default_cmd + u8" ignore <id>`: enable/disable this chat logging"
+                            u8"`" + default_cmd + u8" ignore`: enable/disable this chat logging"
                         );
                     }
                     if (argg.find(" simple") == 0)
@@ -132,9 +132,9 @@ int main(int argc, char* argv[])
                         global_control.flush(guild);
                         ch_a->create_reaction(message, easy_simple_emoji(emoji_yes));
                     }
-                    else if (argg.find(" ignore") == 0 && newid)
-                    {                        
-                        if (global_control.toggle_chat_see(guild, newid)) {
+                    else if (argg.find(" ignore") == 0)
+                    {
+                        if (global_control.toggle_chat_see(guild, channel)) {
                             ch_a->create_reaction(message, easy_simple_emoji(emoji_seeing));
                         }
                         else {
