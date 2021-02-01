@@ -25,7 +25,7 @@ std::string format_emoji(const nlohmann::json& j)
 	return id ? fmt::format("<{}:{}:{}>", anim ? "a" : "", name, id) : name;
 }
 
-std::string easy_simple_emoji(const std::string& in)
+/*std::string easy_simple_emoji(const std::string& in)
 {
 	std::string out;
 	for (auto& i : in) {
@@ -34,7 +34,7 @@ std::string easy_simple_emoji(const std::string& in)
 		out += temp;
 	}
 	return out;
-}
+}*/
 
 unsigned long long stdstoulla(std::string str) {
 	while (str.length() > 0) if (!std::isdigit(str[0])) str.erase(str.begin()); else break;
@@ -122,6 +122,7 @@ GuildConf::GuildConf(GuildConf&& c)
 	chat = c.chat;
 	last_user = c.last_user;
 	format = c.format;
+	no_see = c.no_see;
 }
 
 void GuildConf::start(const GuildConf& c)
@@ -130,10 +131,13 @@ void GuildConf::start(const GuildConf& c)
 	chat = c.chat;
 	last_user = c.last_user;
 	format = c.format;
+	no_see = c.no_see;
 }
 
 nlohmann::json GuildConf::save() const
 {
+	// ALWAYS SEE start() AND COPY CONSTRUCTOR!!!
+
 	nlohmann::json j;
 	j["chat"] = chat;
 	j["last_user"] = last_user;
@@ -141,20 +145,27 @@ nlohmann::json GuildConf::save() const
 
 	for(const auto& i : no_see)
 		j["no_see_chats"].push_back(i);
-	
+
+
+	//std::cout << "[CONFIG-REPORT] Saved { " << chat << " ; " << last_user << " ; F=" << format << " ; " << ((j.count("no_see_chats")) ? ("{ " + j["no_see_chats"].dump() + " } ") : "null") << "}" << std::endl;
+
 	return j;
 }
 
 void GuildConf::load(const nlohmann::json& j)
 {
+	// ALWAYS SEE start() AND COPY CONSTRUCTOR!!!
+
 	if (j.count("chat") && !j["chat"].is_null()) chat = j["chat"];
 	if (j.count("last_user") && !j["last_user"].is_null()) last_user = j["last_user"];
 	if (j.count("format") && !j["format"].is_null()) format = j["format"];
 
 	if (j.count("no_see_chats") && !j["no_see_chats"].is_null()) {
 		for (const auto& _field : j["no_see_chats"])
-			no_see.push_back(_field);
+			no_see.push_back(_field.get<unsigned long long>());
 	}
+
+	//std::cout << "[CONFIG-REPORT] Loaded { " << chat << " ; " << last_user << " ; F=" << format << " ; " << ((j.count("no_see_chats")) ? ("{ " + j["no_see_chats"].dump() + " } ") : "null") << "}" << std::endl;
 }
 
 void GuildConf::push(const std::string& newline, aegis::channel* const chsend)
@@ -304,19 +315,19 @@ bool Control::toggle_chat_see(const aegis::snowflake& guild, const aegis::snowfl
 	if (a != known_guilds.end()) {
 
 		auto& k = a->second;
-		bool seeing = true;
+		bool no_seeing = true;
 
 		for (size_t p = 0; p < k.no_see.size(); p++) {
 			if (k.no_see[p] == nchat) {
 				k.no_see.erase(k.no_see.begin() + p);
-				seeing = false;
+				no_seeing = false;
 				break;
 			}
 		}
-		if (seeing) k.no_see.push_back(nchat);
+		if (no_seeing) k.no_see.push_back(nchat);
 
 		save_nolock(guild, a->second);
-		return seeing;
+		return !no_seeing;
 	}
 	return false;
 }
@@ -361,7 +372,6 @@ void Control::free_guild_channels(const aegis::snowflake& guild)
 		else { ++it; }
 	}
 }
-*/
 void Control::flush()
 {
 	std::lock_guard<std::mutex> l(access_guilds);
@@ -370,3 +380,5 @@ void Control::flush()
 		save_nolock(g.first, g.second);
 	}
 }
+
+*/

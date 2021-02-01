@@ -11,7 +11,7 @@ std::string narrow(const std::u32string&);
 std::u32string widen(const std::string&);
 
 std::string format_emoji(const nlohmann::json&);
-std::string easy_simple_emoji(const std::string&);
+//std::string easy_simple_emoji(const std::string&);
 
 unsigned long long stdstoulla(std::string);
 
@@ -77,7 +77,7 @@ public:
 	bool check_can_see(const aegis::snowflake&, const aegis::snowflake&) const;
 	
 	void flush(const aegis::snowflake&);
-	void flush();
+	//void flush();
 };
 
 inline Control global_control;

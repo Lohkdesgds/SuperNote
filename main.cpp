@@ -6,29 +6,11 @@
 
 bool up = true;
 
-void save_all(int u = 0) {
-    std::cout << "Saving..." << std::endl;
-    up = false;
-    global_control.flush();
-    std::cout << "Saved all configuration." << std::endl;
-}
-
-BOOL onConsoleEvent(DWORD event) {
-
-    switch (event) {
-    case CTRL_C_EVENT:
-    case CTRL_CLOSE_EVENT:
-    case WM_CLOSE:
-        save_all();
-        break;
-    }
-    return 0;
-}
 
 const aegis::snowflake meedev           = 280450898885607425;
 
 const std::string default_cmd           = u8"lsw/sn";
-const std::string version_app           = u8"V1.0.3";
+const std::string version_app           = u8"V1.0.4";
 
 const std::string new_message           = u8"📃";
 const std::string edit_message          = u8"📝";
@@ -47,15 +29,6 @@ const std::string emoji_no_see          = u8"🙈";
 
 int main(int argc, char* argv[])
 {
-    signal(SIGABRT, save_all);
-    signal(SIGTERM, save_all);
-
-    if (!SetConsoleCtrlHandler(onConsoleEvent, TRUE)) {
-        std::cout << "Something went wrong when trying to setup close handling..." << std::endl;
-
-        std::this_thread::sleep_for(std::chrono::seconds(5));
-        return 1;
-    }
 
     //std::vector<Guild> gds;
     std::mutex gds_m;
@@ -113,49 +86,48 @@ int main(int argc, char* argv[])
                     {
                         guild_conf.format = SIMPLISTIC;
                         global_control.flush(guild);
-                        ch_a->create_reaction(message, easy_simple_emoji(emoji_yes));
+                        ch_a->create_reaction(message, (emoji_yes));
                     }
                     else if (argg.find(" restart") == 0 && who == meedev)
                     {
-                        ch_a->create_reaction(message, easy_simple_emoji(emoji_yes));
+                        ch_a->create_reaction(message, (emoji_yes));
                         bot.update_presence(default_cmd + " - restarting...", aegis::gateway::objects::activity::Game, aegis::gateway::objects::presence::Idle);
                         std::this_thread::sleep_for(std::chrono::seconds(1));
                         up = false;
                         std::this_thread::sleep_for(std::chrono::seconds(1));
                         bot.shutdown();
-                        save_all();
                         return;
                     }
                     else if (argg.find(" complex") == 0)
                     {
                         guild_conf.format = MEMBER_RULES;
                         global_control.flush(guild);
-                        ch_a->create_reaction(message, easy_simple_emoji(emoji_yes));
+                        ch_a->create_reaction(message, (emoji_yes));
                     }
                     else if (argg.find(" ignore") == 0)
                     {
                         if (global_control.toggle_chat_see(guild, channel)) {
-                            ch_a->create_reaction(message, easy_simple_emoji(emoji_seeing));
+                            ch_a->create_reaction(message, (emoji_seeing));
                         }
                         else {
-                            ch_a->create_reaction(message, easy_simple_emoji(emoji_no_see));
+                            ch_a->create_reaction(message, (emoji_no_see));
                         }
                     }
                     else if (newid)
                     {
                         global_control.set_guild_chat(guild, newid);
                         bot.log->info("Guild {} has set its chat to {}.", guild, newid);
-                        ch_a->create_reaction(message, easy_simple_emoji(emoji_yes));
+                        ch_a->create_reaction(message, (emoji_yes));
                     }
                     else
                     {
                         global_control.set_guild_chat(guild, 0);
                         bot.log->info("Guild {} removed chat logging.", guild);
-                        ch_a->create_reaction(message, easy_simple_emoji(emoji_yes));
+                        ch_a->create_reaction(message, (emoji_yes));
                     }
                 }
                 else {
-                    ch_a->create_reaction(message, easy_simple_emoji(emoji_no));
+                    ch_a->create_reaction(message, (emoji_no));
                 }
             }
 
