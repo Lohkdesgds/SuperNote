@@ -28,7 +28,7 @@ BOOL onConsoleEvent(DWORD event) {
 const aegis::snowflake meedev           = 280450898885607425;
 
 const std::string default_cmd           = u8"lsw/sn";
-const std::string version_app           = u8"V1.0.2";
+const std::string version_app           = u8"V1.0.3";
 
 const std::string new_message           = u8"📃";
 const std::string edit_message          = u8"📝";
@@ -210,6 +210,8 @@ int main(int argc, char* argv[])
             auto& guild_conf = global_control.grab_guild(guild);
             if (!guild_conf.chat) return;
 
+            if (!global_control.check_can_see(guild, channel)) return;
+
             aegis::snowflake who = author["id"];
 
             if (author.count("bot") && author["bot"].is_boolean() && author["bot"].get<bool>()) return; // bot
@@ -275,6 +277,9 @@ int main(int argc, char* argv[])
             auto& guild_conf = global_control.grab_guild(guild);
 
             if (!guild_conf.chat) return;
+            
+            if (!global_control.check_can_see(guild, channel)) return;
+
             aegis::snowflake who = author["id"]; // user doesn't exist in message_create and message_update
 
             std::string translated_emoji = format_emoji(emoji);
@@ -335,6 +340,7 @@ int main(int argc, char* argv[])
             auto& guild_conf = global_control.grab_guild(guild);
 
             if (!guild_conf.chat) return;
+
             aegis::snowflake who = author["id"]; // user doesn't exist in message_create and message_update
 
             if (author.count("bot") && author["bot"].is_boolean() && author["bot"].get<bool>()) return; // bot
