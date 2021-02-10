@@ -121,10 +121,12 @@
   <ItemGroup>
     <ClCompile Include="guild_here.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="sticker_addon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="guild_here.h" />
     <ClInclude Include="keys.h" />
+    <ClInclude Include="sticker_addon.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

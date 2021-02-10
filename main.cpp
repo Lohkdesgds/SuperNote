@@ -2,6 +2,7 @@
 #include <Windows.h>
 
 #include "guild_here.h"
+#include "sticker_addon.h"
 #include "keys.h"
 
 bool up = true;
@@ -10,7 +11,7 @@ bool up = true;
 const aegis::snowflake meedev           = 280450898885607425;
 
 const std::string default_cmd           = u8"lsw/sn";
-const std::string version_app           = u8"V1.0.4";
+const std::string version_app           = u8"V1.1.0";
 
 const std::string new_message           = u8"📃";
 const std::string edit_message          = u8"📝";
@@ -147,6 +148,15 @@ int main(int argc, char* argv[])
                 return;
             }
 
+            std::string stickers_str; // idc about the sticker itself later
+            if (data.count("stickers") && !data["stickers"].is_null()) {
+                for (const auto& st : data["stickers"]) {
+                    _sticker_addon sticker = st;
+                    if (!stickers_str.empty()) stickers_str += ", ";
+                    stickers_str += sticker.name + " [ID:" + std::to_string(sticker.id) + ";PACK=" + std::to_string(sticker.pack_id) + "]";
+                }
+            }
+
 
             std::string endd;
 
@@ -155,13 +165,15 @@ int main(int argc, char* argv[])
                 endd =
                     "`[" + new_message + "][" + timed.nice_format() + "]"
                     "(" + std::to_string(ch_a->get_id()) + u8"¦" +
-                    author["username"].get<std::string>() + "#" + author["discriminator"].get<std::string>() + "):` " + content;
+                    author["username"].get<std::string>() + "#" + author["discriminator"].get<std::string>() + "):` " + content + 
+                    (stickers_str.empty() ? "" : (std::string("`Stickers: ") + stickers_str + "`"));
                 break;
             case MEMBER_RULES:
                 if (who != guild_conf.last_user) endd = "```md\n[" + std::to_string(who) + "](" + author["username"].get<std::string>() + "#" + author["discriminator"].get<std::string>() + ")```";
                 guild_conf.last_user = who;
                 endd += "`[" + new_message + "][" + timed.nice_format() + "]"
-                    "(" + std::to_string(ch_a->get_id()) + u8"):` " + content;
+                    "(" + std::to_string(ch_a->get_id()) + u8"):` " + content +
+                    (stickers_str.empty() ? "" : (std::string("`Stickers: ") + stickers_str + "`"));
                 break;
             }
 

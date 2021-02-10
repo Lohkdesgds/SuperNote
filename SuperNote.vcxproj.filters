@@ -16,12 +16,18 @@
     <ClCompile Include="guild_here.cpp">
       <Filter>LSW</Filter>
     </ClCompile>
+    <ClCompile Include="sticker_addon.cpp">
+      <Filter>LSW</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="keys.h">
       <Filter>LSW</Filter>
     </ClInclude>
     <ClInclude Include="guild_here.h">
+      <Filter>LSW</Filter>
+    </ClInclude>
+    <ClInclude Include="sticker_addon.h">
       <Filter>LSW</Filter>
     </ClInclude>
   </ItemGroup>
